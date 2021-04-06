@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Netflix</title>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <nav>
+                <ul class="nav-ul">
+                    <li class="space-around"><a href="#"><img src="img/logo.png" alt="Netflix logo" id="logo"></a></li>
+                    <li class="space-around"><a class="active" href="#">Home</a></li>
+                    <li class="space-around"><a href="#">Serie TV</a></li>
+                    <li class="space-around"><a href="#">Film</a></li>
+                    <li class="space-around"><a href="#">Nuovi e popolari</a></li>
+                    <li class="space-around"><a href="#">La mia lista</a></li>
+                </ul>
+                <ul class="nav-ul">
+                    <li class="space-around">
+                        <div class="searchbar">
+                            <div @click="searchMovie" class="lens">
+                                <i class="fas fa-search white-icons"></i>
+                            </div>
+                            <input v-model="search" type="text" id="search" name="search"
+                                placeholder="Titoli, persone, generi">
+                        </div>
+                    </li>
+                    <li class="space-around">
+                        <i class="fas fa-gift white-icons"></i>
+                    </li>
+                    <li class="space-around notify"><i class="fas fa-bell white-icons"></i>
+                        <div class="notification">1</div>
+                    </li>
+                    <li class="space-around">
+                        <div class="avatar">
+                            <img id="avatar-pic" src="img/avatar.png" alt="avatar">
+                            <i class="fas fa-caret-down white-icons"></i>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="container">
+                <div class="film" v-for="film in results">
+                    <h2>Original title : {{film.original_title}}</h2>
+                    <h3>Title : {{film.title}}</h3>
+                    <h4>Original language : {{film.original_language}}</h4>
+                    <p>Rating : {{film.vote_average}}</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
