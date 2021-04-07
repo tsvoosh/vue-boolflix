@@ -56,10 +56,15 @@
         <main>
             <div class="container">
                 <div class="film" v-for="film in results">
-                    <h2>Original title : {{film.original_title}}</h2>
-                    <h3>Title : {{film.title}}</h3>
-                    <h4>Original language : {{film.original_language}}</h4>
-                    <p>Rating : {{film.vote_average}}</p>
+                    <h2 v-if="film.media_type == 'movie'">{{film.title}}</h2>
+                    <h2 v-else>{{film.name}}</h2>
+                    <img class="poster" :src="getPoster(film.poster_path)" alt="poster" @error="noImage">
+                    <!-- <h3>Title : {{film.title}}</h3>
+                    <h4>Original language : {{film.original_language}}</h4> -->
+                    <img style="width: 64px; height: 64px;margin: 0 auto;" :src="getFlag(film.original_language)" alt="flag" @error="noImage">
+                    <div class="rating">
+                        <i :class="setRating(film.vote_average,star)" v-for="star in 5"></i>
+                    </div>
                 </div>
             </div>
         </main>
