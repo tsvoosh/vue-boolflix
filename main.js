@@ -42,9 +42,9 @@ const app = new Vue({
                 this.results.forEach((result) => {
                     result.vote_average = Math.ceil(result.vote_average / 2);
                 })
-                setTimeout(function () {
+                Vue.nextTick(function() {
                     document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                })
             });
             this.search = '';
         },
