@@ -34,7 +34,7 @@
                             <div @click="searchMovie" class="lens">
                                 <i class="fas fa-search white-icons"></i>
                             </div>
-                            <input v-model="search" type="text" id="search" name="search"
+                            <input v-on:keyup.enter="searchMovie" v-model="search" type="text" id="search" name="search"
                                 placeholder="Titoli, persone, generi">
                         </div>
                     </li>
@@ -54,16 +54,50 @@
             </nav>
         </header>
         <main>
+            <video autoplay muted loop id="matrix">
+                <source src="video/matrix.mp4" type="video/mp4">
+            </video>
+            <h2 class="section-title">Consigliati per te</h2>
             <div class="container">
-                <div class="film" v-for="film in results">
-                    <h2 v-if="film.media_type == 'movie'">{{film.title}}</h2>
-                    <h2 v-else>{{film.name}}</h2>
-                    <img class="poster" :src="getPoster(film.poster_path)" alt="poster" @error="noImage">
-                    <!-- <h3>Title : {{film.title}}</h3>
-                    <h4>Original language : {{film.original_language}}</h4> -->
-                    <img style="width: 64px; height: 64px;margin: 0 auto;" :src="getFlag(film.original_language)" alt="flag" @error="noImage">
-                    <div class="rating">
-                        <i :class="setRating(film.vote_average,star)" v-for="star in 5"></i>
+                <div class="flip-card" v-for="film in forYou">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img :src="getPoster(film.poster_path)" alt="poster" @error="noImage"
+                                style="width:250px;height:400px;">
+                        </div>
+                        <div class="flip-card-back">
+                            <h2 v-if="film.media_type == 'movie'">{{film.title}}</h2>
+                            <h2 v-else>{{film.name}}</h2>
+                            <img style="width: 64px; height: 64px;margin: 0 auto;"
+                                :src="getFlag(film.original_language)" alt="flag" @error="noImage">
+                            <div class="rating">
+                                <i :class="setRating(film.vote_average,star)" v-for="star in 5"></i>
+                            </div>
+                            <p>{{film.overview}}</p>
+                            <h3>Casting :</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 v-if="searched" class="section-title">La tua ricerca</h2>
+            <div id="scrollHere" class="container">
+                <div class="flip-card" v-for="film in results">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img :src="getPoster(film.poster_path)" @error="noImage" alt="poster"
+                                style="width:250px;height:400px;">
+                        </div>
+                        <div class="flip-card-back">
+                            <h2 v-if="film.media_type == 'movie'">{{film.title}}</h2>
+                            <h2 v-else>{{film.name}}</h2>
+                            <img style="width: 64px; height: 64px;margin: 0 auto;"
+                                :src="getFlag(film.original_language)" alt="flag" @error="noImage">
+                            <div class="rating">
+                                <i :class="setRating(film.vote_average,star)" v-for="star in 5"></i>
+                            </div>
+                            <p>{{film.overview}}</p>
+                        </div>
+                        <h3>Casting :</h3>
                     </div>
                 </div>
             </div>

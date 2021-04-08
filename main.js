@@ -3,26 +3,49 @@ const app = new Vue({
     data: {
         search: '',
         results: [],
+        forYou: [],
+        searched: false
+    },
+    created() {
+        axios.get('https://api.themoviedb.org/3/search/movie', {
+            params: {
+                api_key: '883ff48744295568b0bc7e5a825782e9',
+                language: 'it-IT',
+                query: 'matrix',
+            }
+        }).then((response) => {
+            for (let index = 0; index < 3; index++) {
+                this.forYou.push(response.data.results[index]);
+            }
+            this.forYou.forEach((result) => {
+                result.vote_average = Math.ceil(result.vote_average / 2);
+            })
+        })
     },
 
     methods: {
         searchMovie() {
+            if (this.search == '') {
+                return;
+            }
+            this.searched = true;
             axios.get('https://api.themoviedb.org/3/search/multi', {
                 params: {
-                    api_key : '883ff48744295568b0bc7e5a825782e9',
-                    language: 'it',
-                    query : this.search,
+                    api_key: '883ff48744295568b0bc7e5a825782e9',
+                    language: 'it-IT',
+                    query: this.search,
                 }
-            })
-                .then((response) => {
-                    this.results = response.data.results.filter((person) => {
-                        return person.media_type != 'person'
-                    });
-                    console.log(this.results);
-                    this.results.forEach((result) => {
-                        result.vote_average = Math.ceil(result.vote_average / 2);
-                    })
+            }).then((response) => {
+                this.results = response.data.results.filter((person) => {
+                    return person.media_type != 'person'
                 });
+                this.results.forEach((result) => {
+                    result.vote_average = Math.ceil(result.vote_average / 2);
+                })
+                setTimeout(function () {
+                    document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            });
             this.search = '';
         },
         setRating(rating, star) {
@@ -34,12 +57,12 @@ const app = new Vue({
         },
         getFlag(language) {
             if (language == 'en') {
-                language = 'gb';
+                language = 'us';
             }
             return "https://www.countryflags.io/" + language + "/shiny/64.png";
         },
         noImage(e) {
-            e.target.src = 'https://cdn.iconscout.com/icon/free/png-256/data-not-found-1965034-1662569.png';
+            e.target.src = 'img/no_image_available.png';
         },
         getPoster(path) {
             return 'http://image.tmdb.org/t/p/w342/' + path
