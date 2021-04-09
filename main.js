@@ -4,9 +4,10 @@ const app = new Vue({
         search: '',
         results: [],
         forYou: [],
-        searched: false
+        searched: false,
+        ready: false
     },
-    created() {
+    mounted() {
         axios.get('https://api.themoviedb.org/3/search/movie', {
             params: {
                 api_key: '883ff48744295568b0bc7e5a825782e9',
@@ -16,11 +17,19 @@ const app = new Vue({
         }).then((response) => {
             for (let index = 0; index < 3; index++) {
                 this.forYou.push(response.data.results[index]);
+                this.forYou[index].vote_average = Math.ceil(this.forYou[index].vote_average / 2);
+                axios.get('https://api.themoviedb.org/3/movie/' + this.forYou[index].id + '/credits?api_key=883ff48744295568b0bc7e5a825782e9&language=en-US')
+                    .then((response) => {
+                        this.forYou[index].cast = response.data.cast;
+                        if (index == (this.forYou.length - 1)) {
+                            setTimeout(() => {
+                                this.ready = true;
+                            }, 100)
+                        }
+                    })
             }
-            this.forYou.forEach((result) => {
-                result.vote_average = Math.ceil(result.vote_average / 2);
-            })
         })
+
     },
 
     methods: {
@@ -28,7 +37,7 @@ const app = new Vue({
             if (this.search == '') {
                 return;
             }
-            this.searched = true;
+            this.searched = false;
             axios.get('https://api.themoviedb.org/3/search/multi', {
                 params: {
                     api_key: '883ff48744295568b0bc7e5a825782e9',
@@ -39,11 +48,35 @@ const app = new Vue({
                 this.results = response.data.results.filter((person) => {
                     return person.media_type != 'person'
                 });
-                this.results.forEach((result) => {
+                this.results.forEach((result, counter) => {
                     result.vote_average = Math.ceil(result.vote_average / 2);
-                })
-                Vue.nextTick(function() {
-                    document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
+                    if (result.media_type == 'tv') {
+                        axios.get('https://api.themoviedb.org/3/tv/' + result.id + '/credits?api_key=883ff48744295568b0bc7e5a825782e9&language=it-IT')
+                            .then((response) => {
+                                result.cast = response.data.cast;
+                                if (counter == this.results.length - 1) {
+                                    setTimeout(() => {
+                                        this.searched = true;
+                                        Vue.nextTick(() => {
+                                            document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
+                                        })
+                                    }, 100);
+                                }
+                            })
+                    } else {
+                        axios.get('https://api.themoviedb.org/3/movie/' + result.id + '/credits?api_key=883ff48744295568b0bc7e5a825782e9&language=it-IT')
+                            .then((response) => {
+                                result.cast = response.data.cast;
+                                if (counter == this.results.length - 1) {
+                                    setTimeout(() => {
+                                        this.searched = true;
+                                        Vue.nextTick(() => {
+                                            document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
+                                        })
+                                    }, 100);
+                                }
+                            })
+                    }
                 })
             });
             this.search = '';
@@ -66,6 +99,12 @@ const app = new Vue({
         },
         getPoster(path) {
             return 'http://image.tmdb.org/t/p/w342/' + path
+        },
+        getActor(id) {
+            axios.get('https://api.themoviedb.org/3/movie/' + id + '/credits?api_key=883ff48744295568b0bc7e5a825782e9&language=en-US')
+                .then((response) => {
+                    return response.data.cast;
+                })
         }
     }
 })

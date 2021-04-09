@@ -57,7 +57,7 @@
             <video autoplay muted loop id="matrix">
                 <source src="video/matrix.mp4" type="video/mp4">
             </video>
-            <h2 class="section-title">Consigliati per te</h2>
+            <h2 v-if="ready" class="section-title">Consigliati per te</h2>
             <div class="container">
                 <div class="flip-card" v-for="film in forYou">
                     <div class="flip-card-inner">
@@ -75,12 +75,15 @@
                             </div>
                             <p>{{film.overview}}</p>
                             <h3>Casting :</h3>
+                            <ul class="actors">
+                                <li v-if="counter < 5" v-for="(actor,counter) in film.cast">{{actor.name}}</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
             <h2 v-if="searched" class="section-title">La tua ricerca</h2>
-            <div id="scrollHere" class="container">
+            <div v-if="searched" id="scrollHere" class="container">
                 <div class="flip-card" v-for="film in results">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
@@ -96,8 +99,11 @@
                                 <i :class="setRating(film.vote_average,star)" v-for="star in 5"></i>
                             </div>
                             <p>{{film.overview}}</p>
+                            <h3>Casting :</h3>
+                            <ul class="actors">
+                                <li v-if="counter < 5" v-for="(actor,counter) in film.cast">{{actor.name}}</li>
+                            </ul>
                         </div>
-                        <h3>Casting :</h3>
                     </div>
                 </div>
             </div>
