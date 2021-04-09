@@ -82,9 +82,12 @@
                     </div>
                 </div>
             </div>
-            <h2 v-if="searched" class="section-title">La tua ricerca</h2>
-            <div v-if="searched" id="scrollHere" class="container">
-                <div class="flip-card" v-for="film in results">
+            <h2 id="scrollHere" v-if="searched" class="section-title">La tua ricerca</h2>
+            <select v-model="selected" v-if="searched">
+                <option v-for="genre in genres">{{genre.name}}</option>
+            </select>
+            <div v-if="searched" class="container">
+                <div v-if="showCard(film)" class="flip-card" v-for="film in results">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
                             <img :src="getPoster(film.poster_path)" @error="noImage" alt="poster"

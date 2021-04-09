@@ -190,3 +190,13 @@ p {
 .actors {
     list-style: none;
 }
+
+select {
+    display: block;
+    margin: 16px auto;
+    border: 1px solid #fff;
+    background: black;
+    color: grey;
+    padding-right: 64px;
+    height: 32px;
+}

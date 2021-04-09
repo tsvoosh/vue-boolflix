@@ -5,9 +5,26 @@ const app = new Vue({
         results: [],
         forYou: [],
         searched: false,
-        ready: false
+        ready: false,
+        genres: [{name : 'All'}],
+        selected: 'All'
     },
-    mounted() {
+    created() {
+        let seriesGenres = axios.get('https://api.themoviedb.org/3/genre/tv/list?api_key=883ff48744295568b0bc7e5a825782e9&language=en-US')
+        let movieGenres = axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=883ff48744295568b0bc7e5a825782e9&language=en-US')
+        axios.all([seriesGenres, movieGenres])
+            .then(
+                axios.spread((...response) => {
+                    response[0].data.genres.forEach((genre) => {
+                        genre.name = genre.name + ' (Tv shows)'
+                        this.genres.push(genre);
+                    })
+                    response[1].data.genres.forEach((genre) => {
+                        genre.name = genre.name + ' (Movies)'
+                        this.genres.push(genre);
+                    })
+                })
+            )
         axios.get('https://api.themoviedb.org/3/search/movie', {
             params: {
                 api_key: '883ff48744295568b0bc7e5a825782e9',
@@ -37,6 +54,7 @@ const app = new Vue({
             if (this.search == '') {
                 return;
             }
+            this.selected = 'All';
             this.searched = false;
             axios.get('https://api.themoviedb.org/3/search/multi', {
                 params: {
@@ -100,11 +118,21 @@ const app = new Vue({
         getPoster(path) {
             return 'http://image.tmdb.org/t/p/w342/' + path
         },
-        getActor(id) {
-            axios.get('https://api.themoviedb.org/3/movie/' + id + '/credits?api_key=883ff48744295568b0bc7e5a825782e9&language=en-US')
-                .then((response) => {
-                    return response.data.cast;
+        showCard(film) {
+            if(this.selected == 'All') {
+                return true;
+            } else {
+                let foundId = undefined;
+                this.genres.forEach((genre) => {
+                    if(this.selected == genre.name) {
+                        foundId = genre.id;
+                    }
                 })
+                if(film.genre_ids.includes(foundId)) {
+                    return true;
+                }
+                return false;
+            }
         }
     }
 })
