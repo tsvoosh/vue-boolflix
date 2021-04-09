@@ -129,6 +129,7 @@ const app = new Vue({
                     }
                 })
                 if(film.genre_ids.includes(foundId)) {
+                    document.getElementById('scrollHere').scrollIntoView({ behavior: 'smooth' });
                     return true;
                 }
                 return false;
