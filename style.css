@@ -148,10 +148,6 @@ nav {
     margin-right: 8px;
     margin-bottom: 8px;
 }
-  
-.flip-card:hover {
-    cursor: pointer;
-}
 
 .flip-card-inner {
     position: relative;
